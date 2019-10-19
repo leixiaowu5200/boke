@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='http://at.alicdn.com/t/font_1443807_xiyz1tcw58p.css' />	
+	<script src="javascripts/jq.js" type="text/javascript" charset="utf-8"></script>
+	<script src="https://cdn.bootcss.com/blueimp-md5/2.11.1/js/md5.js"></script>
+  </head>
+  <body>
+	  
+	<div class="container dlzcy">
+		<h2>用户登录</h2>
+		  <div class="form-group ">
+			<label for="username" class="colorzt"></label>
+			<i class="iconfont icon-ren12"></i>
+		    <input type="text" class="form-control" id="username" placeholder="请输入您的用户名">
+		  </div>
+		  <div class="form-group iconmima">
+			<label for="exampleInputPassword1" class="colorzt"></label>
+			<i class="iconfont icon-suo"></i>
+			<input type="password" class="form-control" id="password" placeholder="请输入您的密码">
+			<i class="iconfont icon-yanjing"></i>
+		  </div>		
+		  <button class="btn btn-success login">登录</button>  
+		  <button class="btn btn-primary " onclick="location.href='/register'">注册</button>  
+		  <p>如无账号请先注册</p>
+	</div>
+	
+	
+	<script>
+		$(".login").click(function(){
+			let password=md5($("#password").val());
+			//点击登录的时候应该是查询下数据库服务器 有没有这个用户名密码 
+			$.ajax({
+				url:"/users/login",
+				type:"post",
+				data:{
+					username:$("#username").val(),
+					password:password
+				},
+				dataType:"json", 
+				success:function(data){
+					console.log(data);
+					if(data.msg=="登录成功"){
+						alert("登录成功");
+						localStorage.setItem("token",data.token);
+						location.href="/"
+					}else{
+						alert("用户名或密码错误");
+						location.href="/login"
+					}
+				}
+			})
+		})
+
+		$(".icon-yanjing").click(function(){
+			if($("#password").attr("type")=="password"){
+				$("#password").attr("type","text");
+			}else{
+				$("#password").attr("type","password");
+			}
+		})
+	</script>
+	
+  </body>
+	
+</html>

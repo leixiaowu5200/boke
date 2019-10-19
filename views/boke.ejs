@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+	<link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script src="javascripts/jq.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/javascripts/xheditor/xheditor-1.2.2.min.js"></script>
+	<script src="/javascripts/xheditor/xheditor_lang/zh-cn.js"></script>
+  </head>
+  <body>
+	<div class="container">
+		<h2>发布文章</h2>
+		  <div class="form-group">
+		    <label for="title" class="colorzt">标题</label>
+		    <input type="text" class="form-control" id="title" placeholder="title">
+		  </div>
+		  <div class="form-group neirong">
+			<label for="content">内容</label>
+			<textarea name="" id="con" cols="30" rows="10" class="form-control xheditor"></textarea>
+		  </div>		
+	<button class="btn btn-success fabu">发布</button>  
+	<button class="btn btn-primary save">保存</button>  
+	
+	</div>
+	<table class="table">
+		<tr>
+			<th>序号</th>
+			<th>标题</th>
+			<!-- <th>删除</th> -->
+		</tr>
+		<% data.map(function(item,i){ %>
+			<tr>
+				<td><%-i+1 %></td>
+				<td><a href="/detail?id=<%- item._id%>"><%-item.title%></a></td>
+				<!-- <td><%-item.con %></td> -->
+				<!-- <td><%- new Date()%></td> -->
+				<td><button class="btn btn-primary xiugai" data-id="<%- item._id%>">修改</button></td>
+				<td><button class="btn btn-danger delte" data-id="<%- item._id%>">删除</button></td>
+			</tr>
+		<% }) %>
+	</table>
+
+	<nav aria-label="Page navigation">
+		<ul class="pagination">
+			<li>
+				<a href="/boke?pageNo=1" aria-label="Next">
+					<span aria-hidden="true">首页</span>
+				</a>
+			</li>
+		  <li>
+			<a href="/boke?pageNo=<%-pageNo<=1?1:parseInt(pageNo)-1 %>" aria-label="Previous">
+			 <!-- 点击上一页的值也是根据后台传的值来判断上一页临界值，后台传过来的数据都会以字符串形式传过来所以转换一下，下一页一个道理 -->
+				<span aria-hidden="true">上一页</span>
+			</a>
+		  </li>
+		  <!-- 如果页码超过5页就显示第一二页和倒数2页和尾页中间显示点点点 -->
+			  <%if(page>5){ %>
+				<li><a href="/boke?pageNo=1">1</a></li> 
+				<li><a href="/boke?pageNo=2">2</a></li>
+				<li><a href="#">...</a></li>
+				<li><a href="/boke?pageNo=<%-page-1 %>"><%-page-1 %></a></li>
+				<li><a href="/boke?pageNo=<%-page %>"><%-page %></a></li>
+				  
+<!-- 如果不大于5页应该全部显示，for循环根据page这个数字来决定有几个li -->
+			  <% }else{%>
+				<% for(let i=0;i<page;i++){%>
+						<li><a href="/boke?pageNo=<%-i+1 %>"><%-i+1 %></a></li>
+					<% }%>
+			<% }%>
+		  <li>
+			<a href="/boke?pageNo=<%-pageNo>=page?page:parseInt(pageNo)+1 %>" aria-label="Next">
+			  <span aria-hidden="true">下一页</span>
+			</a>
+		  </li>
+		  	<li>
+				<a href="/boke?pageNo=<%-page %>" aria-label="Next">
+					<span aria-hidden="true">尾页</span>
+				</a>
+			</li>
+		</ul>
+	  </nav>
+
+
+
+
+	<script src="/javascripts/fwb.js"></script>
+	<script>
+		$(".fabu").click(function(){
+			/* $.ajax({
+				// url:"http://host810267499.s360.pppf.com.cn/herolist.json",因为app.js设置完就在自己服务器访问了就不要localhost:3000了
+				url:"/herolist.json",//http://host810267499.s360.pppf.com.cn等于localhost:3000 这里访问的时候端口域名不用写
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					console.log(data)
+				}
+			}) */
+			$.ajax({
+				url:"/users/boke",
+				type:"post",
+				data:{
+					title:$("#title").val(),
+					con:$("#con").val()
+				},
+				dataType:"json",
+				success:function(data){
+					console.log(data);
+					alert(data.msg);
+					location.href="/boke";
+				}
+			})
+		})
+		//点击删除 删除一条数据从服务器数据库删除 remove
+		$(".delte").click(function(){
+			let id=$(this).attr("data-id")
+			$.ajax({
+				url:"/users/delte",
+				type:"post",
+				data:{
+					id:id
+				},
+				dataType:"json",
+				success:function(data){
+					console.log(data);
+					alert(data.msg);
+					location.href="/boke";
+				}
+			})
+		})
+
+		//修改
+		$(".xiugai").click(function(){
+			let id=$(this).attr("data-id");
+			$(".save").attr("data-id",id);
+			$.ajax({
+				url:"/users/xiugai",
+				type:"post",
+				data:{
+					id:id
+				},
+				dataType:"json",
+				success:function(data){
+					console.log(data);
+					// alert(data.title,data.con);
+					$("#con").val(data.con);
+					$("#title").val(data.title);
+				}
+			})
+		})
+		$(".save").click(function(){
+			let id=$(this).attr("data-id")
+			$.ajax({
+				url:"/users/save1",
+				type:"post",
+				dataType:"json",
+				data:{
+					id:id,
+					con:$("#con").val(),
+					title:$("#title").val()
+				},
+				success:function(data){
+					alert(data.msg);
+					location.href="/boke";
+				}
+			})
+		})
+	</script>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+	<link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script src="javascripts/jq.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../javascripts/carousel.js"></script>
+
+  </head>
+  <body>
+	<div class="box">
+		<h1>LF博客首页</h1>
+		<!-- <p>请登录查看详细内容</p> -->
+	</div>
+	<div class="container shouye dlzcy">
+		<% if(username){ %>
+			<h2>欢迎 : <%- username %> </h2> <%# 流程标签前边有个减号的是输出标签,带#号的是注释标签 %>
+			<%# $(".box").css({"display":"none"}) %>
+			<button class="btn btn-success indexdl" onclick="location.href='/relogin'">退出登录</button>
+			<button class="btn btn-primary indexzc" onclick="location.href='/boke'">发布文章</button>
+		<% }else{ %>
+			<button class="btn btn-success indexdl" onclick="location.href='/login'">登录</button>
+			<button class="btn btn-primary indexzc" onclick="location.href='/register'">注册</button>
+		<% } %>
+		<!-- <button class="test">测试王者荣耀</button> -->
+		<div class="content">
+            <div class="a-content">
+                <div class="carousel-content">
+                    <ul class="carousel">
+                        <li><a href="/"><img src="../images/web2.jpg"></a></li>
+                        <li><a href="/"><img src="../images/bj2.jpg"></a></li>
+                        <li><a href="/"><img src="../images/bj3.jpg"></a></li>
+                    </ul>
+                    <div class="carousel-prev"><img src="../images/left1.png"></div>
+                </div>
+                <ul class="img-index"></ul>
+            </div>
+        </div>
+	</div>
+	<footer class="foot">
+			<p>Copyright 2017-2019 XIAMEN ANTA E-COMMERCE LIMITED All Rights Reserved</p>
+			<p>郑州LF博客有限公司 豫ICP备11020421号</p>
+			<p>河南省郑州市高新区金梭路威科姆科技D栋 电话：400-888-2020</p>
+			<p>
+				<img src="../images/chengxing.png" style="width:110px;height: 39px;">
+				<img src="../images/yinlian.png" alt="" style="width:112px;height:40px;">
+				<img src="../images/chengxin.png" alt="" style="width:112px;height:40px;">
+				<img src="../images/police.png" alt="" style="width: 39px;height: 39px;">
+			</p>
+			<p>&nbsp;</p>
+		</footer>
+	<script>
+		
+		$(".test").click(function(){
+			let token=localStorage.getItem("token");
+			/* $.ajax({
+				// url:"http://host810267499.s360.pppf.com.cn/herolist.json",因为app.js设置完就在自己服务器访问了就不要localhost:3000了
+				url:"/herolist.json",//http://host810267499.s360.pppf.com.cn等于localhost:3000 这里访问的时候端口域名不用写
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					console.log(data)
+				}
+			}) */
+			$.ajax({
+				url:"/jiaoyan",
+				type:"post",
+				headers:{token:token},
+				dataType:"json",
+				success:function(data){
+					console.log(data);
+				}
+			})
+		})
+		//轮播图
+		$(function(){
+        $(".carousel-content").carousel({
+            carousel : ".carousel",//轮播图容器
+            indexContainer : ".img-index",//下标容器
+            prev : ".carousel-prev",//左按钮
+            // next : ".carousel-next",//右按钮
+            timing : 3000,//自动播放间隔
+            animateTime :1000,//动画时间
+            autoPlay : true,//是否自动播放 true/false
+            direction : "left",//滚动方向 right/left
+        });
+
+        $(".carousel-content").hover(function(){
+            $(".carousel-prev,.carousel-next").fadeIn(300);
+        },function(){
+            $(".carousel-prev,.carousel-next").fadeOut(300);
+        });
+
+        $(".carousel-prev").hover(function(){
+            $(this).find("img").attr("src","../images/left2.png");
+        },function(){
+            $(this).find("img").attr("src","../images/left1.png");
+        });
+        /* $(".carousel-next").hover(function(){
+            $(this).find("img").attr("src","./images/right2.png");
+        },function(){
+            $(this).find("img").attr("src","./images/right1.png");
+        }); */
+    });
+	</script>
+  </body>
+</html>

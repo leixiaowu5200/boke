@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='http://at.alicdn.com/t/font_1443807_xiyz1tcw58p.css' />	
+	<script src="javascripts/jq.js" type="text/javascript" charset="utf-8"></script>
+	<script src="https://cdn.bootcss.com/blueimp-md5/2.11.1/js/md5.js"></script>
+  </head>
+  <body>
+	  
+	<div class="container dlzcy">
+		<h2>用户注册</h2>
+		  <div class="form-group">
+			<label for="username" class="colorzt"></label>
+			<i class="iconfont icon-ren12"></i>			
+		    <input type="text" class="form-control" id="username" placeholder="username">
+		  </div>
+		  <div class="form-group iconmima">
+			<label for="exampleInputPassword1" class="colorzt"></label>
+			<i class="iconfont icon-suo"></i>			
+		    <input type="password" class="form-control" id="password" placeholder="Password">
+			<i class="iconfont icon-yanjing"></i>
+		  </div>		
+	<button class="btn btn-success register">注册</button>  
+	</div>
+	
+	
+	<script>
+		$(".register").click(function(){
+			let password=md5($("#password").val());
+			$.ajax({
+				url:"/users/register",
+				type:"post",
+				dataType:"json",
+				data:{
+					username:$("#username").val(),
+					password:password
+					// password:$("#password").val()
+				},
+				success:function(data){
+					// console.log(data);
+					if(data.msg=="注册成功"){
+						alert("注册成功")
+						location.href="/login"
+					}else{
+						alert("用户名重复");
+						location.href="/register"
+					}
+				}
+			})
+		});
+		$(".icon-yanjing").click(function(){
+			if($("#password").attr("type")=="password"){
+				$("#password").attr("type","text");
+			}else{
+				$("#password").attr("type","password");
+			}
+		})
+	</script>
+  </body>
+</html>
